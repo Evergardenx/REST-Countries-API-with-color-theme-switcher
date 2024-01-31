@@ -1,0 +1,48 @@
+---
+import { Image } from "astro:assets";
+
+type Props = {
+  href: string;
+  name: string;
+  image: string;
+  pop: number;
+  region: string;
+  capital: string[];
+  cioc: string;
+};
+
+const { href, name, image, pop, region, capital, cioc, ...rest } = Astro.props;
+---
+
+<article class="rounded" {...rest}>
+  <a
+    href={`/country/${href}`}
+    class="block overflow-hidden bg-theme-elements max-w-xs focus:outline-transparent focus:ring-2 ring-offset-2 ring-theme-text rounded"
+  >
+    <Image
+      src={image}
+      alt={`${name} flag`}
+      width={320}
+      height={213}
+      transition:name={image}
+      class="aspect-[320/213] object-cover w-full h-full"
+    />
+    <div class="grid gap-4 p-4 sm:p-6">
+      <h2 class="text-xl font-bold" transition:name={cioc}>{name}</h2>
+      <div>
+        <div class="flex gap-2">
+          <p><strong>Population</strong>:</p>
+          <p>{pop.toLocaleString(undefined)}</p>
+        </div>
+        <div class="flex gap-2">
+          <p><strong>Region</strong>:</p>
+          <p>{region}</p>
+        </div>
+        <div class="flex gap-2">
+          <p><strong>Capital</strong>:</p>
+          <p>{capital}</p>
+        </div>
+      </div>
+    </div></a
+  >
+</article>

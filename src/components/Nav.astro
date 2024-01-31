@@ -1,0 +1,43 @@
+---
+import Icon from "astro-icon";
+---
+
+<nav
+  class="bg-theme-elements shadow shadow-theme-input dark:shadow-slate-900/40"
+  transition:persist
+>
+  <div class="container flex items-center justify-between py-4">
+    <h1 class="font-bold text-2xl">
+      <a href="/">Where in the world?</a>
+    </h1>
+    <button class="flex items-center gap-2" id="theme-switch">
+      <Icon name="fe:moon" width="24" class="hidden dark:block" />
+      <Icon name="fe:sunny-o" width="24" class="dark:hidden" />
+      <span class="dark:hidden">Dark Mode</span>
+      <span class="hidden dark:block">Light Mode</span>
+    </button>
+  </div>
+</nav>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const themeBtn = document.querySelector("#theme-switch");
+
+    // Obtener el tema actual del localStorage o usar "light" por defecto
+    let currentVal = localStorage.getItem("theme") || "light";
+
+    // Establecer el tema actual en el HTML
+    document.documentElement.setAttribute("data-theme", currentVal);
+
+    themeBtn?.addEventListener("click", () => {
+      // Cambiar el tema al contrario del tema actual
+      currentVal = currentVal === "light" ? "dark" : "light";
+
+      // Establecer el nuevo tema en el HTML
+      document.documentElement.setAttribute("data-theme", currentVal);
+
+      // Guardar el nuevo tema en el localStorage
+      localStorage.setItem("theme", currentVal);
+    });
+  });
+</script>

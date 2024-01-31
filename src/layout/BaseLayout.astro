@@ -1,0 +1,34 @@
+---
+type Props = {
+  title?: string;
+};
+
+const { title = "My Country Site" } = Astro.props;
+
+import { ViewTransitions } from "astro:transitions";
+import "../styles/main.css";
+import Nav from "../components/Nav.astro";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,300;6..12,600;6..12,800&display=swap"
+      rel="stylesheet"
+    />
+    <title>{title}</title>
+    <ViewTransitions />
+  </head>
+  <body class="bg-theme-bkg text-theme-text grid gap-12">
+    <Nav />
+    <main class="container grid gap-4">
+      <slot />
+    </main>
+  </body>
+</html>

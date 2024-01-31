@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --hue: 205deg;
+
+    /* light defaults */
+    --theme-bkg-light: var(--hue) 5% 98%;
+    --theme-elements-light: var(--hue) 8% 100%;
+    --theme-text-light: var(--hue) 15% 8%;
+    --theme-input-light: var(--hue) 8% 52%;
+
+    /* dark defaults */
+    --theme-bkg-dark: var(--hue) 26% 17%;
+    --theme-elements-dark: var(--hue) 23% 22%;
+    --theme-text-dark: var(--hue) 8% 92%;
+    --theme-input-dark: var(--hue) 8% 72%;
+
+    --theme-bkg: var(--theme-bkg-light);
+    --theme-elements: var(--theme-elements-light);
+    --theme-text: var(--theme-text-light);
+    --theme-input: var(--theme-input-light);
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --theme-bkg: var(--theme-bkg-dark);
+      --theme-elements: var(--theme-elements-dark);
+      --theme-text: var(--theme-text-dark);
+      --theme-input: var(--theme-input-dark);
+      color-scheme: dark;
+    }
+  }
+  [data-theme="dark"] {
+    --theme-bkg: var(--theme-bkg-dark);
+    --theme-elements: var(--theme-elements-dark);
+    --theme-text: var(--theme-text-dark);
+    --theme-input: var(--theme-input-dark);
+    color-scheme: dark;
+  }
+  [data-theme="light"] {
+    --theme-bkg: var(--theme-bkg-light);
+    --theme-elements: var(--theme-elements-light);
+    --theme-text: var(--theme-text-light);
+    --theme-input: var(--theme-input-light);
+    color-scheme: light;
+  }
+}

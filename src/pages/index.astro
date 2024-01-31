@@ -1,0 +1,93 @@
+---
+// imports
+import Card from "../components/Card.astro";
+import BaseLayout from "../layout/BaseLayout.astro";
+import type { countryType } from "../types/country";
+
+// data fetching
+const country = Astro.url.searchParams.get("country");
+const res = country
+  ? await fetch(
+      `https://restcountries.com/v3.1/region/${country.toLowerCase()}`
+    )
+  : await fetch("https://restcountries.com/v3.1/all");
+const data = await res.json();
+const regions = ["Africa", "America", "Asia", "Europe", "Oceania"];
+---
+
+<BaseLayout>
+  <input type="search" id="search" placeholder="Enter Search Term" />
+  <label>
+    Filter by region
+    <select id="regions" name="region">
+      <option value="">All</option>
+      {regions.map((r) => <option value={r}>{r}</option>)}
+    </select>
+  </label>
+  <section
+    aria-label="Countries!"
+    class="container flex flex-wrap gap-6 justify-between items-start"
+  >
+    {
+      data.map((d: countryType) => (
+        <Card
+          data-country={d.name.common}
+          href={d.cca3}
+          name={d.name.common}
+          pop={d.population}
+          image={d.flags.png}
+          region={d.region}
+          capital={d.capital}
+          cioc={d.cioc}
+        />
+      ))
+    }
+  </section>
+</BaseLayout>
+
+<script>
+  // inputs
+  const searchInput = document.querySelector("#search") as HTMLInputElement;
+  const regionInput = document.querySelector("#regions") as HTMLSelectElement;
+
+  // cards
+  const countries = Array.from(document.querySelectorAll("[data-country]"));
+
+  // event listeners //
+
+  // search
+  searchInput?.addEventListener("input", (e) => {
+    const value = e.target?.value.toLowerCase();
+    countries.forEach((c) => {
+      if (!c.dataset.country.toLowerCase().includes(value)) {
+        c.classList.add("hidden");
+      } else {
+        c.classList.remove("hidden");
+      }
+    });
+  });
+
+  // dropdown filter
+  regionInput?.addEventListener("change", (e) => {
+    if (e.target.value === "") {
+      return window.location.assign(window.location.origin);
+    }
+    const url = new URL(window.location.origin);
+    url.searchParams.set("country", e.target.value);
+
+    // Replace current querystring with the new one
+    window.location.assign(url);
+  });
+
+  // window on load
+  function setDropdownInput() {
+    const url = new URL(window.location);
+    const { country } = Object.fromEntries(url.searchParams);
+    if (country) {
+      regionInput.value = country;
+    }
+  }
+
+  window.addEventListener("DOMContentLoaded", setDropdownInput);
+  document.addEventListener("astro:after-swap", setDropdownInput);
+</script>

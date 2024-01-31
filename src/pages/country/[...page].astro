@@ -1,0 +1,150 @@
+---
+// Library imports
+import { Icon } from "astro-icon";
+import { Image } from "astro:assets";
+
+// layout
+import BaseLayout from "../../layout/BaseLayout.astro";
+import type { countryType } from "../../types/country";
+import { formatList } from "astro/runtime/server/render/util.js";
+
+// data parms
+const { page } = Astro.params;
+const res = await fetch(`https://restcountries.com/v3.1/alpha/${page}`);
+const data = (await res.json()) as countryType[];
+const country = data[0];
+
+const allCountries = await fetch("https://restcountries.com/v3.1/all");
+const dataCountries = await allCountries.json();
+const borderCountries = dataCountries.filter((c: countryType) =>
+  country?.borders?.includes(c.cioc)
+);
+---
+
+<BaseLayout title={`${country.name.common} Details`}>
+  <div class="grid gap-8 container">
+    <button
+      id="back"
+      class="justify-self-start flex items-center gap-2 rounded-md py-2 pl-6 pr-8 shadow shadow-theme-input dark:shadow-slate-900/40 bg-theme-elements hover:bg-theme-bkg focus:outline-transparent focus-visible:ring-2 ring-offset-4 ring-theme-text transition-all"
+      transition:persist
+    >
+      <Icon name="fe:arrow-left" width="24" />
+       Back
+    </button>
+    <section
+      aria-label={`Information about ${country.name.common}`}
+      class="flex flex-wrap justify-between items-center gap-8"
+    >
+      <Image
+        src={country.flags.png}
+        alt={`${country.name.common} flag`}
+        width={640}
+        height={426}
+        transition:name={country.flags.png}
+        class="sm:basis-1/3 lg:basis-[40%]"
+      />
+      <div class="grid gap-8 sm:basis-1/2">
+        <h1
+          class="text-2xl sm:text-3xl font-bold"
+          transition:name={country.cioc}
+        >
+          {country.name.common}
+        </h1>
+        <div class="flex flex-col justify-between gap-12">
+          <div class="grid gap-2 lg:grid-cols-2 items-start justify-between">
+            <div class="grid gap-2">
+              <div class="flex gap-2 items-start">
+                <p class="shrink-0"><strong>Navite Name</strong>:</p>
+                <p>
+                  {
+                    formatList(
+                      Object.values(country.name.nativeName).map(
+                        (n) => n.common
+                      )
+                    )
+                  }
+                </p>
+              </div>
+              <div class="flex gap-2 items-start">
+                <p class="shrink-0"><strong>Population</strong>:</p>
+                <p>
+                  {country.population.toLocaleString()}
+                </p>
+              </div>
+              <div class="flex gap-2 items-start">
+                <p class="shrink-0"><strong>Region</strong>:</p>
+                <p>
+                  {country.region}
+                </p>
+              </div>
+              <div class="flex gap-2 items-start">
+                <p class="shrink-0"><strong>Sub Region</strong>:</p>
+                <p>
+                  {country.subregion}
+                </p>
+              </div>
+              <div class="flex gap-2 items-start">
+                <p class="shrink-0"><strong>Captial</strong>:</p>
+                <p>
+                  {country.capital[0]}
+                </p>
+              </div>
+            </div>
+            <div class="grid gap-2">
+              <div class="flex gap-2 items-start">
+                <p class="shrink-0"><strong>Top Level Domain</strong>:</p>
+                <p>
+                  {country.tld}
+                </p>
+              </div>
+              <div class="flex gap-2 items-start">
+                <p class="shrink-0"><strong>Currenies</strong>:</p>
+                <p>
+                  {
+                    formatList(
+                      Object.values(country.currencies).map((c) => c.name)
+                    )
+                  }
+                </p>
+              </div>
+              <div class="flex gap-2 items-start">
+                <p class="shrink-0"><strong>Languages</strong>:</p>
+                <p>
+                  {formatList(Object.values(country.languages))}
+                </p>
+              </div>
+            </div>
+          </div>
+          {
+            borderCountries.length > 0 && (
+              <div class="flex gap-4 items-start">
+                <p class="shrink-0">
+                  <strong>Border Countries</strong>:
+                </p>
+                <div class="flex flex-wrap gap-3 items-center">
+                  {borderCountries.map((c: countryType) => (
+                    <a
+                      href={`/country/${c.cca3}`}
+                      class="justify-self-start flex items-center gap-2 rounded-md py-1 px-4 shadow shadow-theme-input dark:shadow-slate-900/40 bg-theme-elements hover:bg-theme-bkg focus:outline-transparent focus-visible:ring-2 ring-offset-4 ring-theme-text transition-all"
+                    >
+                      {c.name.common}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )
+          }
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  const btn = document.querySelector("#back");
+  btn?.addEventListener("click", () => history.back());
+</script>
+
+<!-- TODOS -->
+<!-- create nav -->
+<!-- update theme on toggle -->
